@@ -1,6 +1,8 @@
 import argparse
 from pathlib import Path
 import logging
+from logging.config import fileConfig
+fileConfig('logging_config.ini')
 import torch
 
 from allennlp.commands.elmo import ElmoEmbedder

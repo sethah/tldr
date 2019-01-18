@@ -56,8 +56,6 @@ if __name__ == "__main__":
                 f.write(" ".join([tok.text for tok in tokens]) + "\n")
                 labels.append(label)
             np.save(out_path / "{:x}.npy".format(file_hash), np.array(labels))
-            if i > 10:
-                break
 
 
 
