@@ -42,10 +42,10 @@ if __name__ == "__main__":
 
     for i, file_hash in enumerate(file_hashes):
         write_file = Path(out_path / "{:x}.txt".format(file_hash))
+        sentence_path = dataset_path / "../scored_sentences/{:x}.json".format(file_hash)
+        if not sentence_path.exists():
+            continue
         with open(write_file, 'w') as f:
-            sentence_path = dataset_path / "../scored_sentences/{:x}.json".format(file_hash)
-            if not sentence_path.exists():
-                continue
             labels = []
             for sentence, label in get_sentence_iterator(sentence_path):
                 sentence = sentence.replace("\n", "").lower()
