@@ -3,19 +3,6 @@ from pathlib import Path
 import logging
 import torch
 
-from tldr.dataset import ArticleDatasetReader
-
-from allennlp.training import Trainer
-from allennlp.training.learning_rate_schedulers import LearningRateWithoutMetricsWrapper, SlantedTriangular, CosineWithRestarts
-from allennlp.data.dataset_readers import DatasetReader
-from allennlp.models import Model
-from allennlp.data.iterators import BasicIterator
-from allennlp.training.optimizers import Optimizer
-from allennlp.data.iterators import BucketIterator
-from allennlp.common import Params
-from allennlp.data import Vocabulary
-from allennlp.modules.text_field_embedders import TextFieldEmbedder, BasicTextFieldEmbedder
-from allennlp.modules.token_embedders import Embedding, ElmoTokenEmbedder, TokenEmbedder
 from allennlp.commands.elmo import ElmoEmbedder
 
 DEFAULT_OPTIONS_FILE = "https://s3-us-west-2.amazonaws.com/allennlp/models/elmo/2x4096_512_2048cnn_2xhighway/elmo_2x4096_512_2048cnn_2xhighway_options.json" # pylint: disable=line-too-long
@@ -27,7 +14,6 @@ logger = logging.getLogger(__name__)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--cuda-device", type=int, default=-1)
     parser.add_argument('--dataset-path', type=str, default="")
     parser.add_argument('--options-file', type=str, default=DEFAULT_OPTIONS_FILE)
     parser.add_argument('--weight-file', type=str, default=DEFAULT_WEIGHT_FILE)
@@ -62,8 +48,8 @@ if __name__ == "__main__":
     for file in [f for f in dataset_path.iterdir() if f.suffix == ".txt"]:
         with torch.no_grad():
             elmo_embedder.embed_file(
-                file,
-                file.parent / file.stem.with_suffix(".hdf5"),
+                open(str(file), 'r'),
+                str(file.parent / f"{file.stem}.hdf5"),
                 output_format,
                 args.batch_size,
                 args.forget_sentences,
