@@ -27,14 +27,15 @@ requirements: test_environment
 	pip install -U pip setuptools wheel
 	pip install -r requirements.txt
 
-ALL_ARTICLES=$(wildcard $(DATA_DIR)/interim/sentences/*.txt)
+ALL_ARTICLES=$(wildcard $(DATA_DIR)/processed/sentences/*.txt)
 
 PROJECT_DIR := $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 DATA_DIR = $(PROJECT_DIR)/data
 
-score_sentences: $(addprefix $(DATA_DIR)/interim/sentences/, $(addsuffix .hdf5, $(basename $(notdir $(ALL_ARTICLES)))))
-$(DATA_DIR)/interim/sentences/%.hdf5: $(DATA_DIR)/interim/sentences/%.txt
-	allennlp elmo $< $@ --all
+score_sentences: DEVICE = -1
+score_sentences: $(addprefix $(DATA_DIR)/processed/sentences/, $(addsuffix .hdf5, $(basename $(notdir $(ALL_ARTICLES)))))
+$(DATA_DIR)/processed/sentences/%.hdf5: $(DATA_DIR)/processed/sentences/%.txt
+	allennlp elmo $< $@ --all --cuda-device $(DEVICE)
 
 ## Delete all compiled Python files
 clean:
