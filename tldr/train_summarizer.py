@@ -52,6 +52,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     params = Params.from_file(args.param_file)
+    use_gpu = args.gpu or torch.cuda.is_available()
 
     ds = DatasetReader.from_params(params.pop("dataset_reader"))
 
